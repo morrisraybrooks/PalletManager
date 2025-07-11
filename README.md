@@ -1,4 +1,4 @@
-# Building 3 Station Numbers
+# PalletManager - Building 3 Station Numbers
 
 A comprehensive station numbering system for Building 3, containing all aisles and stations organized in a structured format.
 
