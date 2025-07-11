@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+missing_sections.txt
+
+# Android/Gradle (if not needed for this project)
+gradle-*/
+*.zip
+*.zip.*
+cmdline-tools/
+commandlinetools-*
+
+# Node modules (if not part of main project)
+node_modules/
+package-lock.json
+
+# Other project directories (if not part of station numbers)
+PalletManager/
+pallet-manager/
