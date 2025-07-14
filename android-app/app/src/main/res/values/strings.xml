@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">🚀 NEW STATION UI</string>
+    <string name="app_subtitle">Dollar General - Building 3</string>
+    
+    <!-- Station Lookup Screen (Main) -->
+    <string name="station_lookup">Station Lookup</string>
+    <string name="enter_station_number">Enter Station Number</string>
+    <string name="station_input_hint">e.g., 3-40-15-1 or 4015</string>
+    <string name="check_digit_found">Check Digit:</string>
+    <string name="station_not_found">Station Not Found</string>
+    <string name="looking_up">Looking up...</string>
+    <string name="enter_station_prompt">Enter Station Number</string>
+    <string name="check_digit_prompt">Check digit will appear here</string>
+    <string name="lookup_button">Lookup</string>
+    <string name="save_button">Save</string>
+    <string name="recently_used">Recently Used</string>
+    <string name="most_used">Most Used</string>
+
+    <!-- Legacy Main Screen -->
+    <string name="add_pallet">Add Pallet</string>
+    <string name="station_database">Station Database</string>
+    <string name="active_assignments">Active Assignments</string>
+    <string name="no_assignments">No active pallet assignments</string>
+    <string name="assignments_count">%d active assignments</string>
+    
+    <!-- Add Assignment Screen -->
+    <string name="product_name">Product Name</string>
+    <string name="product_name_hint">e.g., Old Roy, Gravy Train (optional)</string>
+    <string name="destination">Destination *</string>
+    <string name="destination_hint">e.g., 3-58-15-1</string>
+    <string name="check_digit">Check Digit *</string>
+    <string name="check_digit_hint">e.g., 21, 99</string>
+    <string name="notes">Notes</string>
+    <string name="notes_hint">Optional notes about this assignment</string>
+    <string name="save_assignment">Save Assignment</string>
+    <string name="cancel">Cancel</string>
+    
+    <!-- Station Database Screen -->
+    <string name="search_stations">Search Stations</string>
+    <string name="total_stations">Total Stations: %d</string>
+    <string name="station_number">Station Number *</string>
+    <string name="station_number_hint">e.g., 3-58-15-1</string>
+    <string name="description">Description</string>
+    <string name="description_hint">Optional description</string>
+    <string name="add_station">Add Station</string>
+    <string name="edit_station">Edit Station</string>
+    <string name="delete_station">Delete Station</string>
+    <string name="used_times">Used %d times</string>
+    
+    <!-- Validation Messages -->
+    <string name="error_required_field">This field is required</string>
+    <string name="error_invalid_station">Invalid station format (use X-XX-XX-X)</string>
+    <string name="error_invalid_check_digit">Check digit must be a number</string>
+    <string name="error_check_digit_not_found">Check digit not found for %s</string>
+    
+    <!-- Success Messages -->
+    <string name="assignment_saved">Assignment saved successfully</string>
+    <string name="station_saved">Station saved successfully</string>
+    <string name="station_deleted">Station deleted successfully</string>
+    <string name="assignment_delivered">Assignment marked as delivered</string>
+    
+    <!-- Actions -->
+    <string name="clear">Clear</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="deliver">Mark Delivered</string>
+    <string name="settings">Settings</string>
+    
+    <!-- Content Descriptions -->
+    <string name="cd_add_assignment">Add new pallet assignment</string>
+    <string name="cd_station_database">Manage station database</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_edit_station">Edit station</string>
+    <string name="cd_delete_station">Delete station</string>
+    <string name="cd_deliver_assignment">Mark assignment as delivered</string>
+</resources>

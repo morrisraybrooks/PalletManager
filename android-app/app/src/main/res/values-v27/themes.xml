@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme for API 27+ -->
+    <style name="Theme.PalletManager" parent="Theme.Material3.DayNight">
+        <!-- Navigation bar for API 27+ -->
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PalletManager" parent="Theme.Material3.DayNight">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">#FF0000</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_primary_container</item>
+        
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+        
+        <!-- Background colors -->
+        <item name="colorSurface">#FFFF00</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+        
+        <!-- Error colors -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+        <item name="colorErrorContainer">@color/error_container</item>
+        <item name="colorOnErrorContainer">@color/on_error_container</item>
+        
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@color/surface</item>
+    </style>
+
+    <!-- Warehouse-optimized theme with high contrast and large touch targets -->
+    <style name="Theme.PalletManager.Warehouse" parent="Theme.PalletManager">
+        <!-- Enhanced contrast for warehouse environment -->
+        <item name="colorPrimary">@color/high_contrast_primary</item>
+        <item name="colorSecondary">@color/high_contrast_secondary</item>
+        <item name="colorSurface">@color/high_contrast_surface</item>
+        <item name="colorOutline">@color/high_contrast_outline</item>
+
+        <!-- Larger minimum touch targets for glove use -->
+        <item name="minTouchTargetSize">56dp</item>
+
+        <!-- High contrast status bar -->
+        <item name="android:statusBarColor">@color/high_contrast_primary</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
