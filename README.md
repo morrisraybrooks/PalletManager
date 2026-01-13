@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="android-app/app/build/outputs/apk/debug/PalletManager.apk">
+  <a href="https://github.com/morrisraybrooks/PalletManager/raw/main/releases/PalletManager.apk">
     <img src="https://img.shields.io/badge/Download-PalletManager%20APK-blue?style=for-the-badge&logo=android" alt="Download APK"/>
   </a>
 </p>
