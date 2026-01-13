@@ -1,5 +1,15 @@
 # PalletManager - Building 3 Station Numbers
 
+<p align="center">
+  <img src="pallet-icon.png" alt="PalletManager Icon" width="200"/>
+</p>
+
+<p align="center">
+  <a href="android-app/app/build/outputs/apk/debug/PalletManager.apk">
+    <img src="https://img.shields.io/badge/Download-PalletManager%20APK-blue?style=for-the-badge&logo=android" alt="Download APK"/>
+  </a>
+</p>
+
 A comprehensive station numbering system for Building 3, containing all aisles and stations organized in a structured format.
 
 ## Overview
