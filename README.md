@@ -1,76 +1,96 @@
-# PalletManager - Building 3 Station Numbers
+# Pallet Manager
 
 <p align="center">
-  <img src="pallet-icon.png" alt="PalletManager Icon" width="200"/>
+  <img src="pallet-icon.png" alt="Pallet Manager Icon" width="200"/>
 </p>
 
 <p align="center">
   <a href="https://github.com/morrisraybrooks/PalletManager/raw/main/releases/PalletManager.apk">
-    <img src="https://img.shields.io/badge/Download-PalletManager%20APK-blue?style=for-the-badge&logo=android" alt="Download APK"/>
+    <img src="https://img.shields.io/badge/Download-APK-blue?style=for-the-badge&logo=android" alt="Download APK"/>
   </a>
 </p>
 
-A comprehensive station numbering system for Building 3, containing all aisles and stations organized in a structured format.
+An Android app designed for warehouse forklift operators to efficiently manage multiple pallet deliveries simultaneously. Built specifically for Dollar General Building 3 operations.
 
-## Overview
+## Features
 
-This project contains the complete station numbering system for Building 3, which includes:
-- **58 Aisles**: Numbered from 01 to 58
-- **63 Stations per aisle**: Each aisle contains stations numbered 01-63
-- **Total stations**: 3,654 individual station numbers
+### 📱 **Station Lookup**
+- Quickly search for any station number
+- Instantly retrieve check digits without manual lookup
+- Recently used and most frequently used stations for quick access
 
-## File Structure
+### 📊 **Station Database**
+- Complete database of 3,654 station numbers
+- **58 Aisles** (01-58) × **63 Stations** per aisle
+- Browse and search all stations in Building 3
 
-- `station-numbers.md` - Main file containing all station numbers organized by district
-- `station-numbers-complete.md` - Complete backup version
-- `rebuild_stations.py` - Python script to generate and organize station sections
-- `check_missing.py` - Utility script to identify missing station sections
+### 🚚 **Pallet Assignment Management**
+- Track multiple pallet deliveries simultaneously
+- Store product names, destinations, and check digits
+- Mark deliveries as complete when done
+- Never forget a pallet destination again
 
-## Station Number Format
+### 💡 **Built for Warehouse Use**
+- Large, easy-to-tap buttons for use with work gloves
+- Clear, readable interface for various lighting conditions
+- Offline functionality - no internet required
+- Fast and responsive for quick use between tasks
 
+## Installation
+
+1. **Download the APK** - Click the download button above or [download directly](https://github.com/morrisraybrooks/PalletManager/raw/main/releases/PalletManager.apk)
+2. **Enable Unknown Sources** - Go to Settings > Security > Enable "Install from Unknown Sources"
+3. **Install** - Open the downloaded APK file and follow the installation prompts
+4. **Launch** - Find "Pallet Manager" in your app drawer and start using it!
+
+## How It Works
+
+### Station Number Format
 Each station follows the format: `03-[aisle]-[station]-01--[suffix]`
 
-Where:
-- `03` = Building/Region code
-- `[aisle]` = Aisle number (01-58)
-- `[station]` = Station number within aisle (01-63)
-- `01` = Category/Type code
-- `[suffix]` = Two-digit suffix code (varies by station)
+**Example:** `03-42-15-01--69`
+- `03` = Building 3
+- `42` = Aisle 42
+- `15` = Station 15
+- `01` = Category code
+- `69` = Check digit (suffix)
 
-## Example
+### Quick Lookup
+Simply enter a station number like `3-40-15-1` or `4015`, and the app instantly displays the check digit you need.
 
-```
-03-42-15-01--69
-```
-- Building 3
-- Aisle 42
-- Station 15
-- Category 01
-- Suffix 69
+### Pallet Tracking
+When your forklift computer shows a new pallet assignment:
+1. Open Pallet Manager
+2. Add the pallet with product name, destination, and check digit
+3. Continue working - the app remembers all your active deliveries
+4. Mark pallets as delivered when complete
 
-## Districts
+## Technical Details
 
-The file is organized into 58 districts:
-- District 03-01 through District 03-58
-- Each district represents one aisle in Building 3
-- Each district contains exactly 63 stations
+- **Platform**: Android (API 24+, Android 7.0 and above)
+- **Size**: ~20 MB
+- **Database**: 3,654 pre-loaded station numbers
+- **Storage**: Local SQLite database (offline)
+- **Architecture**: MVVM with Jetpack Compose
+- **Language**: Kotlin
 
-## Usage
+## Building 3 Coverage
 
-The station numbers can be used for:
-- Inventory management
-- Location tracking
-- Warehouse organization
-- Asset management systems
+- **58 Aisles**: Numbered 01 through 58
+- **63 Stations per aisle**: Each aisle contains stations 01-63
+- **Total stations**: 3,654 individual station numbers with check digits
 
-## Scripts
+## Repository Contents
 
-### rebuild_stations.py
-Generates the complete station numbering structure while preserving existing suffix codes.
+- `android-app/` - Android application source code
+- `releases/` - Latest APK builds
+- `station-numbers.md` - Complete station database reference
+- `rebuild_stations.py` - Utility script for station data management
 
-### check_missing.py
-Identifies any missing station sections and generates reports.
+## Support
 
-## Building 3 Layout
+For issues, questions, or feature requests, please open an issue on GitHub.
 
-Building 3 uses a station numbering pattern where each aisle (01-58) contains 63 stations numbered 01-63, following the format `03-[aisle]-[station]-01--[suffix]`.
+---
+
+**Built for Dollar General Building 3 warehouse operations** 🚀
