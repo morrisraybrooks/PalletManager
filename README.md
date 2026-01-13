@@ -20,9 +20,9 @@ An Android app designed for warehouse forklift operators to efficiently manage m
 - Recently used and most frequently used stations for quick access
 
 ### 📊 **Station Database**
-- Complete database of 3,654 station numbers
-- **58 Aisles** (01-58) × **63 Stations** per aisle
-- Browse and search all stations in Building 3
+- Pre-loaded with 234 commonly used station check digits
+- Covers aisles 40, 42, 57, 58, and 59
+- Add and manage your own stations as you discover them
 
 ### 🚚 **Pallet Assignment Management**
 - Track multiple pallet deliveries simultaneously
@@ -69,16 +69,17 @@ When your forklift computer shows a new pallet assignment:
 
 - **Platform**: Android (API 24+, Android 7.0 and above)
 - **Size**: ~20 MB
-- **Database**: 3,654 pre-loaded station numbers
+- **Database**: 234 pre-loaded station check digits
 - **Storage**: Local SQLite database (offline)
 - **Architecture**: MVVM with Jetpack Compose
 - **Language**: Kotlin
 
-## Building 3 Coverage
+## Station Coverage
 
-- **58 Aisles**: Numbered 01 through 58
-- **63 Stations per aisle**: Each aisle contains stations 01-63
-- **Total stations**: 3,654 individual station numbers with check digits
+- **Pre-loaded Aisles**: 40, 42, 57, 58, 59
+- **Total pre-loaded stations**: 234 station check digits
+- **Expandable**: Add new stations as you discover them
+- **Building 3 Format**: Supports all Building 3 station numbers (03-XX-XX-01)
 
 ## Repository Contents
 
