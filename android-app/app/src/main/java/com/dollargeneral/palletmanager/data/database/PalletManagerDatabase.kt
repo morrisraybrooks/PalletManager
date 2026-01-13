@@ -64,12 +64,16 @@ object StationUtils {
     
     /**
      * Simple station number formatting for warehouse use
-     * Converts "5801" to "58-01", keeps "58-01" as "58-01"
+     * Converts various formats to XX-XX format for database lookup:
+     * - "5801" -> "58-01"
+     * - "58-01" -> "58-01"
+     * - "3-58-01-1" -> "58-01"
+     * - "03-58-01-01" -> "58-01"
      */
     fun normalizeStationNumber(input: String): String {
         Log.d("StationUtils", "normalizeStationNumber: Input = $input")
 
-        val cleaned = input.trim()
+        val cleaned = input.trim().replace(Regex("[^0-9-]"), "")
 
         // If it's already in XX-XX format, keep it
         if (cleaned.matches(Regex("\\d{2}-\\d{2}"))) {
@@ -77,17 +81,37 @@ object StationUtils {
             return cleaned
         }
 
-        // If it's 4 digits, convert to XX-XX format
+        // If it's 4 digits, convert to XX-XX format (e.g., "5801" -> "58-01")
         if (cleaned.length == 4 && cleaned.all { it.isDigit() }) {
             val aisle = cleaned.substring(0, 2)
             val station = cleaned.substring(2, 4)
             val result = "$aisle-$station"
-            Log.d("StationUtils", "normalizeStationNumber: Converted $cleaned to $result")
+            Log.d("StationUtils", "normalizeStationNumber: Converted 4-digit $cleaned to $result")
+            return result
+        }
+
+        // Handle full format: "3-58-01-1" or "03-58-01-01" -> "58-01"
+        val fullFormatMatch = Regex("\\d{1,2}-(\\d{2})-(\\d{2})-\\d{1,2}").find(cleaned)
+        if (fullFormatMatch != null) {
+            val aisle = fullFormatMatch.groupValues[1]
+            val station = fullFormatMatch.groupValues[2]
+            val result = "$aisle-$station"
+            Log.d("StationUtils", "normalizeStationNumber: Converted full format $cleaned to $result")
+            return result
+        }
+
+        // Handle partial format: "3-58-01" -> "58-01"
+        val partialFormatMatch = Regex("\\d{1,2}-(\\d{2})-(\\d{2})").find(cleaned)
+        if (partialFormatMatch != null) {
+            val aisle = partialFormatMatch.groupValues[1]
+            val station = partialFormatMatch.groupValues[2]
+            val result = "$aisle-$station"
+            Log.d("StationUtils", "normalizeStationNumber: Converted partial format $cleaned to $result")
             return result
         }
 
         // Otherwise, return as-is
-        Log.d("StationUtils", "normalizeStationNumber: No conversion needed = $cleaned")
+        Log.d("StationUtils", "normalizeStationNumber: No conversion applied = $cleaned")
         return cleaned
     }
     
@@ -116,7 +140,8 @@ object StationUtils {
     }
 
     /**
-     * Get validation status for standard format (XX-XX like "58-01")
+     * Get validation status for all supported formats
+     * Supports: "58-01", "5801", "3-58-01-1", "03-58-01-01"
      */
     fun getValidationStatus(input: String): ValidationResult {
         if (input.isEmpty()) {
@@ -124,9 +149,11 @@ object StationUtils {
         }
 
         return when {
-            // Complete formats that should trigger lookup
+            // Complete formats that should trigger auto-lookup
             input.matches(Regex("\\d{2}-\\d{2}")) -> ValidationResult.VALID // "58-01"
             input.length == 4 && input.all { it.isDigit() } -> ValidationResult.COMPACT_FORMAT // "5801"
+            input.matches(Regex("\\d{1,2}-\\d{2}-\\d{2}-\\d{1,2}")) -> ValidationResult.FULL_FORMAT // "3-58-01-1" or "03-58-01-01"
+            input.matches(Regex("\\d{1,2}-\\d{2}-\\d{2}")) -> ValidationResult.PARTIAL_FULL_FORMAT // "3-58-01" (missing position)
 
             // Partial formats that should NOT trigger lookup
             input.length < 3 -> ValidationResult.TOO_SHORT // "5", "58"
@@ -197,7 +224,9 @@ enum class ValidationResult(val message: String, val isValid: Boolean) {
     TOO_SHORT("Keep typing...", false),
     VALID("Valid station format ✓", true),
     COMPACT_FORMAT("Compact format detected", true),
-    PARTIAL_FORMAT("Keep typing...", false),  // Changed to false - don't trigger lookup on partial input
+    FULL_FORMAT("Full format detected ✓", true),  // "3-58-01-1" or "03-58-01-01"
+    PARTIAL_FULL_FORMAT("Almost there...", false),  // "3-58-01" (missing position)
+    PARTIAL_FORMAT("Keep typing...", false),
     TOO_LONG("Too many digits", false),
     INVALID_CHARACTERS("Use only numbers and dashes", false),
     INVALID_FORMAT("Try format: 58-01 or 5801", false)
