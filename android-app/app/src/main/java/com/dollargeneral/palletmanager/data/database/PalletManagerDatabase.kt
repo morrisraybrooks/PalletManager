@@ -144,27 +144,63 @@ object StationUtils {
      * Supports: "58-01", "5801", "3-58-01-1", "03-58-01-01"
      */
     fun getValidationStatus(input: String): ValidationResult {
+        Log.d("StationUtils", "🟢 getValidationStatus called with: '$input'")
+
         if (input.isEmpty()) {
+            Log.d("StationUtils", "🟢 Result: EMPTY")
             return ValidationResult.EMPTY
         }
 
-        return when {
+        val result = when {
             // Complete formats that should trigger auto-lookup
-            input.matches(Regex("\\d{2}-\\d{2}")) -> ValidationResult.VALID // "58-01"
-            input.length == 4 && input.all { it.isDigit() } -> ValidationResult.COMPACT_FORMAT // "5801"
-            input.matches(Regex("\\d{1,2}-\\d{2}-\\d{2}-\\d{1,2}")) -> ValidationResult.FULL_FORMAT // "3-58-01-1" or "03-58-01-01"
-            input.matches(Regex("\\d{1,2}-\\d{2}-\\d{2}")) -> ValidationResult.PARTIAL_FULL_FORMAT // "3-58-01" (missing position)
+            input.matches(Regex("\\d{2}-\\d{2}")) -> {
+                Log.d("StationUtils", "🟢 Matched XX-XX format: '$input'")
+                ValidationResult.VALID // "58-01"
+            }
+            input.length == 4 && input.all { it.isDigit() } -> {
+                Log.d("StationUtils", "🟢 Matched 4-digit compact format: '$input'")
+                ValidationResult.COMPACT_FORMAT // "5801"
+            }
+            input.matches(Regex("\\d{1,2}-\\d{2}-\\d{2}-\\d{1,2}")) -> {
+                Log.d("StationUtils", "🟢 Matched full format: '$input'")
+                ValidationResult.FULL_FORMAT // "3-58-01-1" or "03-58-01-01"
+            }
+            input.matches(Regex("\\d{1,2}-\\d{2}-\\d{2}")) -> {
+                Log.d("StationUtils", "🟢 Matched partial full format: '$input'")
+                ValidationResult.PARTIAL_FULL_FORMAT // "3-58-01" (missing position)
+            }
 
             // Partial formats that should NOT trigger lookup
-            input.length < 3 -> ValidationResult.TOO_SHORT // "5", "58"
-            input.matches(Regex("\\d{2}-\\d{1}")) -> ValidationResult.PARTIAL_FORMAT // "58-1"
-            input.matches(Regex("\\d{1,2}-")) -> ValidationResult.PARTIAL_FORMAT // "58-"
-            input.length == 3 && input.all { it.isDigit() } -> ValidationResult.PARTIAL_FORMAT // "580"
+            input.length < 3 -> {
+                Log.d("StationUtils", "🟢 Too short: '$input'")
+                ValidationResult.TOO_SHORT // "5", "58"
+            }
+            input.matches(Regex("\\d{2}-\\d{1}")) -> {
+                Log.d("StationUtils", "🟢 Partial format XX-X: '$input'")
+                ValidationResult.PARTIAL_FORMAT // "58-1"
+            }
+            input.matches(Regex("\\d{1,2}-")) -> {
+                Log.d("StationUtils", "🟢 Partial format with trailing dash: '$input'")
+                ValidationResult.PARTIAL_FORMAT // "58-"
+            }
+            input.length == 3 && input.all { it.isDigit() } -> {
+                Log.d("StationUtils", "🟢 Partial 3-digit format: '$input'")
+                ValidationResult.PARTIAL_FORMAT // "580"
+            }
 
             // Invalid formats
-            input.any { !it.isDigit() && it != '-' } -> ValidationResult.INVALID_CHARACTERS
-            else -> ValidationResult.INVALID_FORMAT
+            input.any { !it.isDigit() && it != '-' } -> {
+                Log.d("StationUtils", "🟢 Invalid characters: '$input'")
+                ValidationResult.INVALID_CHARACTERS
+            }
+            else -> {
+                Log.d("StationUtils", "🟢 Invalid format: '$input'")
+                ValidationResult.INVALID_FORMAT
+            }
         }
+
+        Log.d("StationUtils", "🟢 Final result: ${result.name} (isValid=${result.isValid})")
+        return result
     }
 
     /**

@@ -66,11 +66,17 @@ class StationLookupViewModel @Inject constructor(
      * Update station input and provide real-time validation
      */
     fun updateStationInput(input: String) {
-        Log.d("StationLookupViewModel", "updateStationInput: $input")
+        Log.d("StationLookupViewModel", "🔵 updateStationInput called with: '$input'")
 
         val cleanedInput = input.trim()
+        Log.d("StationLookupViewModel", "🔵 Cleaned input: '$cleanedInput'")
+
         val validationResult = StationUtils.getValidationStatus(cleanedInput)
+        Log.d("StationLookupViewModel", "🔵 Validation result: ${validationResult.name} (isValid=${validationResult.isValid})")
+
         val suggestions = StationUtils.getInputSuggestions(cleanedInput)
+        val isComplete = isCompleteStationInput(cleanedInput)
+        Log.d("StationLookupViewModel", "🔵 Is complete station input: $isComplete")
 
         _uiState.value = _uiState.value.copy(
             stationInput = cleanedInput,
@@ -80,8 +86,11 @@ class StationLookupViewModel @Inject constructor(
         )
 
         // Auto-lookup if input looks complete
-        if (validationResult.isValid && isCompleteStationInput(cleanedInput)) {
+        if (validationResult.isValid && isComplete) {
+            Log.d("StationLookupViewModel", "✅ AUTO-TRIGGERING LOOKUP for '$cleanedInput'")
             lookupStation()
+        } else {
+            Log.d("StationLookupViewModel", "❌ NOT auto-triggering: isValid=${validationResult.isValid}, isComplete=$isComplete")
         }
     }
 
