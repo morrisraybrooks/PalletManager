@@ -233,18 +233,18 @@ private fun EmptyStationsContent(
                     onClick = onImportSample,
                     modifier = Modifier.height(48.dp)
                 ) {
-                    Icon(Icons.Default.Download, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Import Sample")
+                    Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Import Sample", fontSize = 14.sp)
                 }
 
                 Button(
                     onClick = onAddStation,
                     modifier = Modifier.height(48.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Add Station")
+                    Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("Add Station", fontSize = 14.sp)
                 }
             }
         }
@@ -415,7 +415,7 @@ private fun AddEditStationDialog(
                         modifier = Modifier.weight(1f),
                         enabled = !uiState.isSaving
                     ) {
-                        Text("Cancel")
+                        Text("Cancel", fontSize = 16.sp)
                     }
 
                     Button(
@@ -430,7 +430,10 @@ private fun AddEditStationDialog(
                                 strokeWidth = 2.dp
                             )
                         } else {
-                            Text(if (uiState.editingStation != null) "Update" else "Save")
+                            Text(
+                                text = if (uiState.editingStation != null) "Update" else "Save",
+                                fontSize = 16.sp
+                            )
                         }
                     }
                 }

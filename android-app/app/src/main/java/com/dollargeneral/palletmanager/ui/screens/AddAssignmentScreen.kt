@@ -146,7 +146,7 @@ fun AddAssignmentScreen(
                     modifier = Modifier.weight(1f).height(56.dp),
                     enabled = !uiState.isSaving
                 ) {
-                    Text("Clear")
+                    Text("Clear", fontSize = 16.sp)
                 }
                 Button(
                     onClick = { viewModel.saveAssignment() },
@@ -156,7 +156,7 @@ fun AddAssignmentScreen(
                     if (uiState.isSaving) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text("Save Assignment")
+                        Text("Save Assignment", fontSize = 16.sp)
                     }
                 }
             }
