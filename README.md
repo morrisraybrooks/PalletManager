@@ -10,7 +10,7 @@
   </a>
 </p>
 
-An Android app designed for warehouse forklift operators to efficiently manage multiple pallet deliveries simultaneously. Built specifically for Dollar General Building 3 operations.
+An Android app designed for warehouse forklift operators to efficiently manage multiple pallet deliveries simultaneously. Supports multiple Dollar General buildings (2, 3, and 4) with building-specific station data management.
 
 ## Features
 
@@ -74,12 +74,14 @@ When your forklift computer shows a new pallet assignment:
 - **Architecture**: MVVM with Jetpack Compose
 - **Language**: Kotlin
 
-## Station Coverage
+## Multi-Building Support
 
+- **Buildings Supported**: 2, 3, and 4
 - **Pre-loaded Aisles**: 40, 42, 57, 58, 59
-- **Total pre-loaded stations**: 234 station check digits
+- **Total pre-loaded stations**: 234 station check digits per building
 - **Expandable**: Add new stations as you discover them
-- **Building 3 Format**: Supports all Building 3 station numbers (03-XX-XX-01)
+- **Building-Specific Data**: Each building maintains independent station records
+- **Easy Switching**: Quickly select building from any screen via dropdown selector
 
 ## Repository Contents
 
@@ -94,4 +96,4 @@ For issues, questions, or feature requests, please open an issue on GitHub.
 
 ---
 
-**Built for Dollar General Building 3 warehouse operations** 🚀
+**Built for Dollar General warehouse operations** 🚀
