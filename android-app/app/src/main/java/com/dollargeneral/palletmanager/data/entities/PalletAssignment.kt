@@ -57,27 +57,37 @@ data class PalletAssignment(
  * Entity for storing check digits for warehouse stations
  * This is the lookup database for auto-filling check digits
  */
-@Entity(tableName = "station_check_digits")
+@Entity(
+    tableName = "station_check_digits",
+    primaryKeys = ["buildingNumber", "stationNumber"]
+)
 data class StationCheckDigit(
-    @PrimaryKey
-    val stationNumber: String, // Format: "03-58-15-01" (normalized)
-    
+    /**
+     * Building number (2, 3, or 4)
+     */
+    val buildingNumber: Int,
+
+    /**
+     * Station number in simplified format (e.g., "58-15")
+     */
+    val stationNumber: String,
+
     /**
      * The check digit for this station (e.g., "21", "99")
      */
     val checkDigit: String,
-    
+
     /**
      * When this check digit was added/last updated
      */
     val lastUpdated: Date = Date(),
-    
+
     /**
      * Optional description of what's typically stored at this station
      * (e.g., "Dog Food Section", "Cleaning Supplies")
      */
     val description: String = "",
-    
+
     /**
      * How frequently this station is used (for sorting/prioritizing)
      * Higher numbers = more frequently used
@@ -101,6 +111,7 @@ data class ActiveAssignment(
  * Data class for station lookup results
  */
 data class StationLookup(
+    val buildingNumber: Int,
     val stationNumber: String,
     val checkDigit: String,
     val description: String,

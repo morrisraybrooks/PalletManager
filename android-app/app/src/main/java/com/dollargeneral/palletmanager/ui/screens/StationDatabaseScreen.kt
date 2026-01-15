@@ -48,7 +48,25 @@ fun StationDatabaseScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Station Database", fontWeight = FontWeight.Bold) },
+                title = {
+                    Column {
+                        Text("Station Database", fontWeight = FontWeight.Bold)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "Managing:",
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            com.dollargeneral.palletmanager.ui.components.CompactBuildingSelector(
+                                selectedBuilding = uiState.selectedBuilding,
+                                onBuildingSelected = viewModel::updateSelectedBuilding
+                            )
+                        }
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")

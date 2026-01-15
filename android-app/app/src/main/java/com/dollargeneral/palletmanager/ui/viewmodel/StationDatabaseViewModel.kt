@@ -17,8 +17,11 @@ class StationDatabaseViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(StationDatabaseUiState())
     val uiState: StateFlow<StationDatabaseUiState> = _uiState.asStateFlow()
 
-    // All stations from the database
-    val allStations: StateFlow<List<StationLookup>> = repository.getAllStations()
+    // All stations from the database - filtered by selected building
+    val allStations: StateFlow<List<StationLookup>> = _uiState
+        .flatMapLatest { state ->
+            repository.getAllStations(state.selectedBuilding)
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -148,6 +151,7 @@ class StationDatabaseViewModel @Inject constructor(
             }
 
             val result = repository.addOrUpdateStation(
+                buildingNumber = currentUiState.selectedBuilding,
                 stationNumber = normalizedStation,
                 checkDigit = checkDigit,
                 description = description
@@ -179,7 +183,8 @@ class StationDatabaseViewModel @Inject constructor(
     fun deleteStation(stationNumber: String) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            repository.deleteStation(stationNumber)
+            val buildingNumber = _uiState.value.selectedBuilding
+            repository.deleteStation(buildingNumber, stationNumber)
                 .onSuccess {
                     showMessage("Station deleted successfully!")
                 }
@@ -204,7 +209,8 @@ class StationDatabaseViewModel @Inject constructor(
 
     fun addBulkStation(stationNumber: String, checkDigit: String) {
         viewModelScope.launch {
-            repository.addOrUpdateStation(stationNumber, checkDigit)
+            val buildingNumber = _uiState.value.selectedBuilding
+            repository.addOrUpdateStation(buildingNumber, stationNumber, checkDigit)
                 .onSuccess {
                     // Success handled silently for bulk operations
                 }
@@ -212,6 +218,13 @@ class StationDatabaseViewModel @Inject constructor(
                     showError("Failed to add station $stationNumber: ${error.message}")
                 }
         }
+    }
+
+    /**
+     * Update selected building
+     */
+    fun updateSelectedBuilding(buildingNumber: Int) {
+        _uiState.value = _uiState.value.copy(selectedBuilding = buildingNumber)
     }
 }
 
@@ -228,5 +241,6 @@ data class StationDatabaseUiState(
     val editingStation: StationLookup? = null,
     val stationError: String? = null,
     val checkDigitError: String? = null,
-    val isSaving: Boolean = false
+    val isSaving: Boolean = false,
+    val selectedBuilding: Int = 3 // Default to Building 3
 )

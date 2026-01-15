@@ -65,6 +65,23 @@ fun AddAssignmentScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Building Selector
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Building Selection",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    com.dollargeneral.palletmanager.ui.components.BuildingSelector(
+                        selectedBuilding = uiState.selectedBuilding,
+                        onBuildingSelected = viewModel::updateSelectedBuilding,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
             // Destination and Check Digit
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {

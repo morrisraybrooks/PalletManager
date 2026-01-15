@@ -103,15 +103,15 @@ class PalletRepository @Inject constructor(
     // ========== Station Check Digit Operations ==========
     
     /**
-     * Look up check digit for a destination
+     * Look up check digit for a destination in a specific building
      * Returns null if not found
      */
-    suspend fun getCheckDigitForStation(destination: String): String? {
-        Log.d("PalletRepository", "🔍 lookupCheckDigit input: '$destination'")
+    suspend fun getCheckDigitForStation(buildingNumber: Int, destination: String): String? {
+        Log.d("PalletRepository", "🔍 lookupCheckDigit input: building=$buildingNumber, station='$destination'")
         val normalizedDestination = StationUtils.normalizeStationNumber(destination)
         Log.d("PalletRepository", "🔍 normalized to: '$normalizedDestination'")
 
-        val result = stationCheckDigitDao.getCheckDigit(normalizedDestination)
+        val result = stationCheckDigitDao.getCheckDigit(buildingNumber, normalizedDestination)
         Log.d("PalletRepository", "🔍 DAO result: '$result'")
 
         // Also check total count in database for debugging
@@ -125,20 +125,22 @@ class PalletRepository @Inject constructor(
      * Add or update a station check digit
      */
     suspend fun addOrUpdateStation(
+        buildingNumber: Int,
         stationNumber: String,
         checkDigit: String,
         description: String = ""
     ): Result<Unit> {
         return try {
             val normalizedStation = StationUtils.normalizeStationNumber(stationNumber)
-            
+
             val station = StationCheckDigit(
+                buildingNumber = buildingNumber,
                 stationNumber = normalizedStation,
                 checkDigit = checkDigit.trim(),
                 description = description.trim(),
                 lastUpdated = Date()
             )
-            
+
             stationCheckDigitDao.insertOrUpdateStation(station)
             Result.success(Unit)
         } catch (e: Exception) {
@@ -147,26 +149,26 @@ class PalletRepository @Inject constructor(
     }
     
     /**
-     * Get all stations
+     * Get all stations for a specific building
      */
-    fun getAllStations(): Flow<List<StationLookup>> {
-        return stationCheckDigitDao.getAllStations()
+    fun getAllStations(buildingNumber: Int): Flow<List<StationLookup>> {
+        return stationCheckDigitDao.getAllStations(buildingNumber)
     }
-    
+
     /**
-     * Search stations
+     * Search stations in a specific building
      */
-    suspend fun searchStations(searchTerm: String): List<StationLookup> {
-        return stationCheckDigitDao.searchStations(searchTerm)
+    suspend fun searchStations(buildingNumber: Int, searchTerm: String): List<StationLookup> {
+        return stationCheckDigitDao.searchStations(buildingNumber, searchTerm)
     }
     
     /**
      * Delete a station
      */
-    suspend fun deleteStation(stationNumber: String): Result<Unit> {
+    suspend fun deleteStation(buildingNumber: Int, stationNumber: String): Result<Unit> {
         return try {
             val normalizedStation = StationUtils.normalizeStationNumber(stationNumber)
-            stationCheckDigitDao.deleteStation(normalizedStation)
+            stationCheckDigitDao.deleteStation(buildingNumber, normalizedStation)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -193,22 +195,24 @@ class PalletRepository @Inject constructor(
     }
     
     /**
-     * Get stations by aisle (e.g., all stations in aisle 58)
+     * Get stations by aisle (e.g., all stations in aisle 58) in a specific building
      */
-    suspend fun getStationsByAisle(aisleNumber: String): List<StationLookup> {
-        val pattern = "%-${aisleNumber.padStart(2, '0')}-%"
-        return stationCheckDigitDao.getStationsByAisle(pattern)
+    suspend fun getStationsByAisle(buildingNumber: Int, aisleNumber: String): List<StationLookup> {
+        val pattern = "${aisleNumber.padStart(2, '0')}-%"
+        return stationCheckDigitDao.getStationsByAisle(buildingNumber, pattern)
     }
     
     /**
      * Batch import stations from your recorded data
      * Useful for initial setup
+     * Format: Triple(buildingNumber, stationNumber, checkDigit)
      */
-    suspend fun importStations(stations: List<Pair<String, String>>): Result<Int> {
+    suspend fun importStations(stations: List<Triple<Int, String, String>>): Result<Int> {
         Log.d("PalletRepository", "Received ${stations.size} stations for import.")
         return try {
-            val stationEntities = stations.map { (stationNumber, checkDigit) ->
+            val stationEntities = stations.map { (buildingNumber, stationNumber, checkDigit) ->
                 StationCheckDigit(
+                    buildingNumber = buildingNumber,
                     stationNumber = StationUtils.normalizeStationNumber(stationNumber),
                     checkDigit = checkDigit.trim(),
                     lastUpdated = Date()

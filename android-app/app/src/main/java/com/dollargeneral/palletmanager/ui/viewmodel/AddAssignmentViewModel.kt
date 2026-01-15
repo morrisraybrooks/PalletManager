@@ -57,13 +57,14 @@ class AddAssignmentViewModel @Inject constructor(
                 val (isValid, _) = repository.validateAndFormatStation(normalized)
 
                 if (isValid) {
-                    val checkDigit = repository.getCheckDigitForStation(normalized)
+                    val buildingNumber = _uiState.value.selectedBuilding
+                    val checkDigit = repository.getCheckDigitForStation(buildingNumber, normalized)
                     _uiState.value = _uiState.value.copy(
                         checkDigit = checkDigit ?: "",
                         suggestedCheckDigit = checkDigit,
                         isLookingUpCheckDigit = false,
                         normalizedDestination = normalized,
-                        destinationError = if (checkDigit == null) "Check digit not found for $normalized" else null
+                        destinationError = if (checkDigit == null) "Check digit not found for $normalized in Building $buildingNumber" else null
                     )
                 } else {
                     _uiState.value = _uiState.value.copy(
@@ -156,9 +157,10 @@ class AddAssignmentViewModel @Inject constructor(
                     // Also save the check digit to the database if it's new
                     if (state.suggestedCheckDigit == null) {
                         repository.addOrUpdateStation(
+                            buildingNumber = state.selectedBuilding,
                             stationNumber = state.destination,
                             checkDigit = state.checkDigit,
-                            description = if (state.productName.isNotEmpty()) 
+                            description = if (state.productName.isNotEmpty())
                                 "Added from ${state.productName}" else ""
                         )
                     }
@@ -186,9 +188,9 @@ class AddAssignmentViewModel @Inject constructor(
      * Reset the form
      */
     fun resetForm() {
-        _uiState.value = AddAssignmentUiState()
+        _uiState.value = AddAssignmentUiState(selectedBuilding = _uiState.value.selectedBuilding)
     }
-    
+
     /**
      * Clear any displayed message
      */
@@ -196,6 +198,18 @@ class AddAssignmentViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             message = null,
             isError = false
+        )
+    }
+
+    /**
+     * Update selected building
+     */
+    fun updateSelectedBuilding(buildingNumber: Int) {
+        _uiState.value = _uiState.value.copy(
+            selectedBuilding = buildingNumber,
+            // Clear check digit when switching buildings
+            checkDigit = "",
+            suggestedCheckDigit = null
         )
     }
 }
@@ -208,19 +222,22 @@ data class AddAssignmentUiState(
     val destination: String = "",
     val checkDigit: String = "",
     val notes: String = "",
-    
+
     // Validation errors (product name doesn't need validation)
     val destinationError: String? = null,
     val checkDigitError: String? = null,
-    
+
     // Auto-lookup state
     val isLookingUpCheckDigit: Boolean = false,
     val suggestedCheckDigit: String? = null,
     val normalizedDestination: String = "",
-    
+
     // Save state
     val isSaving: Boolean = false,
     val isSaved: Boolean = false,
     val message: String? = null,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+
+    // Building selection
+    val selectedBuilding: Int = 3 // Default to Building 3
 )

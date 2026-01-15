@@ -34,7 +34,7 @@ class StationDataImporter(
                 repository.deleteAllStations()
             }
 
-            val stationData = mutableListOf<Pair<String, String>>()
+            val stationData = mutableListOf<Triple<Int, String, String>>()
             Log.d("StationDataImporter", "📂 Opening station_data.csv from assets")
 
             val inputStream: InputStream = assetManager.open("station_data.csv")
@@ -45,14 +45,15 @@ class StationDataImporter(
                         return@forEachIndexed // Skip header
                     }
 
-                    if (row.size >= 2) {
-                        val stationNumber = row[0].trim()
-                        val checkDigit = row[1].trim()
-                        stationData.add(stationNumber to checkDigit)
+                    if (row.size >= 3) {
+                        val buildingNumber = row[0].trim().toIntOrNull() ?: 3
+                        val stationNumber = row[1].trim()
+                        val checkDigit = row[2].trim()
+                        stationData.add(Triple(buildingNumber, stationNumber, checkDigit))
 
                         // Enhanced logging for debugging
                         if (index <= 5 || index % 50 == 0) {
-                            Log.d("StationDataImporter", "📝 Row $index: '$stationNumber' -> '$checkDigit'")
+                            Log.d("StationDataImporter", "📝 Row $index: Building $buildingNumber, '$stationNumber' -> '$checkDigit'")
                         }
                     } else {
                         Log.w("StationDataImporter", "⚠️ Skipping malformed row $index: ${row.joinToString(",")}")
@@ -89,10 +90,11 @@ class StationDataImporter(
      */
     suspend fun importTestData(): Result<Int> {
         val testStations = listOf(
-            "03-58-15-02" to "99", // Your Old Roy example (position 2)
-            "03-58-16-02" to "01",
-            "03-57-30-02" to "45",
-            "03-57-31-02" to "46"
+            Triple(3, "58-15", "69"), // Building 3, Station 58-15
+            Triple(3, "58-16", "90"),
+            Triple(3, "57-30", "45"),
+            Triple(2, "40-01", "11"), // Building 2 test data
+            Triple(4, "40-01", "22")  // Building 4 test data
         )
 
         return repository.importStations(testStations)

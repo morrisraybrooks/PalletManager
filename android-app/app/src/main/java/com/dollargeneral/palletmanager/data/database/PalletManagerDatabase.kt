@@ -32,18 +32,52 @@ class Converters {
  */
 @Database(
     entities = [PalletAssignment::class, StationCheckDigit::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class PalletManagerDatabase : RoomDatabase() {
-    
+
     abstract fun palletAssignmentDao(): PalletAssignmentDao
     abstract fun stationCheckDigitDao(): StationCheckDigitDao
-    
+
     companion object {
         const val DATABASE_NAME = "pallet_manager_database"
-        
+
+        /**
+         * Migration from version 2 to 3: Add building support
+         */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Create new table with building number
+                database.execSQL("""
+                    CREATE TABLE station_check_digits_new (
+                        buildingNumber INTEGER NOT NULL,
+                        stationNumber TEXT NOT NULL,
+                        checkDigit TEXT NOT NULL,
+                        lastUpdated INTEGER NOT NULL,
+                        description TEXT NOT NULL,
+                        usageFrequency INTEGER NOT NULL,
+                        PRIMARY KEY(buildingNumber, stationNumber)
+                    )
+                """.trimIndent())
+
+                // Copy existing data to new table with building 3 as default
+                database.execSQL("""
+                    INSERT INTO station_check_digits_new
+                    (buildingNumber, stationNumber, checkDigit, lastUpdated, description, usageFrequency)
+                    SELECT 3, stationNumber, checkDigit, lastUpdated, description, usageFrequency
+                    FROM station_check_digits
+                """.trimIndent())
+
+                // Drop old table
+                database.execSQL("DROP TABLE station_check_digits")
+
+                // Rename new table
+                database.execSQL("ALTER TABLE station_check_digits_new RENAME TO station_check_digits")
+            }
+        }
+
         /**
          * Pre-populate database with common station check digits
          * This includes the ranges you mentioned: 03-57-XX-01 and 03-58-XX-01

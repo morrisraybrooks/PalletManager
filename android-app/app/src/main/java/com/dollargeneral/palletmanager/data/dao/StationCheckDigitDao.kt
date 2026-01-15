@@ -15,34 +15,36 @@ import java.util.Date
 interface StationCheckDigitDao {
     
     /**
-     * Get check digit for a specific station
+     * Get check digit for a specific station in a specific building
      * Used for auto-filling when entering destinations
      */
-    @Query("SELECT checkDigit FROM station_check_digits WHERE stationNumber = :stationNumber")
-    suspend fun getCheckDigit(stationNumber: String): String?
+    @Query("SELECT checkDigit FROM station_check_digits WHERE buildingNumber = :buildingNumber AND stationNumber = :stationNumber")
+    suspend fun getCheckDigit(buildingNumber: Int, stationNumber: String): String?
     
     /**
-     * Get all stations with their check digits
+     * Get all stations with their check digits for a specific building
      * Used for the station database management screen
      */
     @Query("""
-        SELECT stationNumber, checkDigit, description, usageFrequency 
-        FROM station_check_digits 
+        SELECT buildingNumber, stationNumber, checkDigit, description, usageFrequency
+        FROM station_check_digits
+        WHERE buildingNumber = :buildingNumber
         ORDER BY usageFrequency DESC, stationNumber ASC
     """)
-    fun getAllStations(): Flow<List<StationLookup>>
+    fun getAllStations(buildingNumber: Int): Flow<List<StationLookup>>
     
     /**
-     * Search stations by station number or description
+     * Search stations by station number or description in a specific building
      */
     @Query("""
-        SELECT stationNumber, checkDigit, description, usageFrequency 
-        FROM station_check_digits 
-        WHERE stationNumber LIKE '%' || :searchTerm || '%' 
-           OR description LIKE '%' || :searchTerm || '%'
+        SELECT buildingNumber, stationNumber, checkDigit, description, usageFrequency
+        FROM station_check_digits
+        WHERE buildingNumber = :buildingNumber
+          AND (stationNumber LIKE '%' || :searchTerm || '%'
+           OR description LIKE '%' || :searchTerm || '%')
         ORDER BY usageFrequency DESC, stationNumber ASC
     """)
-    suspend fun searchStations(searchTerm: String): List<StationLookup>
+    suspend fun searchStations(buildingNumber: Int, searchTerm: String): List<StationLookup>
     
     /**
      * Insert or update a station check digit
@@ -74,13 +76,14 @@ interface StationCheckDigitDao {
      * Update a station's check digit
      */
     @Query("""
-        UPDATE station_check_digits 
-        SET checkDigit = :checkDigit, lastUpdated = :lastUpdated 
-        WHERE stationNumber = :stationNumber
+        UPDATE station_check_digits
+        SET checkDigit = :checkDigit, lastUpdated = :lastUpdated
+        WHERE buildingNumber = :buildingNumber AND stationNumber = :stationNumber
     """)
     suspend fun updateCheckDigit(
-        stationNumber: String, 
-        checkDigit: String, 
+        buildingNumber: Int,
+        stationNumber: String,
+        checkDigit: String,
         lastUpdated: Date = Date()
     )
     
@@ -113,7 +116,7 @@ interface StationCheckDigitDao {
      * Get most used stations for quick access
      */
     @Query("""
-        SELECT stationNumber, checkDigit, description, usageFrequency
+        SELECT buildingNumber, stationNumber, checkDigit, description, usageFrequency
         FROM station_check_digits
         WHERE usageFrequency > 0
         ORDER BY usageFrequency DESC
@@ -124,8 +127,8 @@ interface StationCheckDigitDao {
     /**
      * Delete a station
      */
-    @Query("DELETE FROM station_check_digits WHERE stationNumber = :stationNumber")
-    suspend fun deleteStation(stationNumber: String)
+    @Query("DELETE FROM station_check_digits WHERE buildingNumber = :buildingNumber AND stationNumber = :stationNumber")
+    suspend fun deleteStation(buildingNumber: Int, stationNumber: String)
 
     /**
      * Delete all stations
@@ -134,15 +137,15 @@ interface StationCheckDigitDao {
     suspend fun deleteAllStations()
     
     /**
-     * Get stations by aisle range (e.g., all stations in aisle 58)
+     * Get stations by aisle range (e.g., all stations in aisle 58) in a specific building
      */
     @Query("""
-        SELECT stationNumber, checkDigit, description, usageFrequency 
-        FROM station_check_digits 
-        WHERE stationNumber LIKE :aislePattern 
+        SELECT buildingNumber, stationNumber, checkDigit, description, usageFrequency
+        FROM station_check_digits
+        WHERE buildingNumber = :buildingNumber AND stationNumber LIKE :aislePattern
         ORDER BY stationNumber ASC
     """)
-    suspend fun getStationsByAisle(aislePattern: String): List<StationLookup>
+    suspend fun getStationsByAisle(buildingNumber: Int, aislePattern: String): List<StationLookup>
     
 
     
@@ -155,6 +158,6 @@ interface StationCheckDigitDao {
     /**
      * Check if a station exists
      */
-    @Query("SELECT EXISTS(SELECT 1 FROM station_check_digits WHERE stationNumber = :stationNumber)")
-    suspend fun stationExists(stationNumber: String): Boolean
+    @Query("SELECT EXISTS(SELECT 1 FROM station_check_digits WHERE buildingNumber = :buildingNumber AND stationNumber = :stationNumber)")
+    suspend fun stationExists(buildingNumber: Int, stationNumber: String): Boolean
 }

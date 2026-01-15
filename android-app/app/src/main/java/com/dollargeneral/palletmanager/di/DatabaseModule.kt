@@ -33,7 +33,8 @@ object DatabaseModule {
             PalletManagerDatabase.DATABASE_NAME
         )
         .addCallback(PalletManagerDatabase.CALLBACK)
-        .fallbackToDestructiveMigration() // Clear and recreate database for simplified format
+        .addMigrations(PalletManagerDatabase.MIGRATION_2_3)
+        .fallbackToDestructiveMigration() // Clear and recreate database if migration fails
         .build()
     }
     

@@ -27,8 +27,11 @@ class StationLookupViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(StationLookupUiState())
     val uiState: StateFlow<StationLookupUiState> = _uiState.asStateFlow()
 
-    // Recent stations (last 10 used)
-    val recentStations: StateFlow<List<StationLookup>> = repository.getAllStations()
+    // Recent stations (last 10 used) - filtered by selected building
+    val recentStations: StateFlow<List<StationLookup>> = _uiState
+        .flatMapLatest { state ->
+            repository.getAllStations(state.selectedBuilding)
+        }
         .map { stations ->
             stations.filter { it.usageFrequency > 0 }
                 .sortedByDescending { it.usageFrequency }
@@ -40,8 +43,11 @@ class StationLookupViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-    // Most frequently used stations
-    val frequentStations: StateFlow<List<StationLookup>> = repository.getAllStations()
+    // Most frequently used stations - filtered by selected building
+    val frequentStations: StateFlow<List<StationLookup>> = _uiState
+        .flatMapLatest { state ->
+            repository.getAllStations(state.selectedBuilding)
+        }
         .map { stations ->
             stations.filter { it.usageFrequency >= 3 }
                 .sortedByDescending { it.usageFrequency }
@@ -112,8 +118,9 @@ class StationLookupViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                Log.d("StationLookupViewModel", "🔍 Calling repository.lookupCheckDigit('$currentInput')")
-                val checkDigit = repository.getCheckDigitForStation(currentInput)
+                val buildingNumber = _uiState.value.selectedBuilding
+                Log.d("StationLookupViewModel", "🔍 Calling repository.lookupCheckDigit(building=$buildingNumber, station='$currentInput')")
+                val checkDigit = repository.getCheckDigitForStation(buildingNumber, currentInput)
                 Log.d("StationLookupViewModel", "🔍 Lookup result: '$checkDigit'")
 
                 val normalizedStation = StationUtils.normalizeStationNumber(currentInput)
@@ -131,7 +138,7 @@ class StationLookupViewModel @Inject constructor(
                     Log.d("StationLookupViewModel", "✅ Check digit found, recording usage")
                     repository.recordStationUsage(normalizedStation)
                 } else {
-                    Log.w("StationLookupViewModel", "❌ No check digit found for '$currentInput'")
+                    Log.w("StationLookupViewModel", "❌ No check digit found for building $buildingNumber, station '$currentInput'")
                 }
             } catch (e: Exception) {
                 Log.e("StationLookupViewModel", "❌ Lookup failed for '$currentInput'", e)
@@ -249,11 +256,24 @@ class StationLookupViewModel @Inject constructor(
      * Check if input matches expected station formats
      */
     private fun isValidStationFormat(input: String): Boolean {
-        return StationUtils.isValidStationNumber(input) || 
+        return StationUtils.isValidStationNumber(input) ||
                input.matches(Regex("\\d{4}")) || // 4015
                input.matches(Regex("\\d{2}-\\d{2}")) || // 40-15
                input.matches(Regex("\\d-\\d{2}-\\d{2}")) || // 3-40-15
                input.matches(Regex("\\d-\\d{2}-\\d{2}-\\d")) // 3-40-15-1
+    }
+
+    /**
+     * Update selected building
+     */
+    fun updateSelectedBuilding(buildingNumber: Int) {
+        Log.d("StationLookupViewModel", "updateSelectedBuilding: $buildingNumber")
+        _uiState.value = _uiState.value.copy(
+            selectedBuilding = buildingNumber,
+            // Clear results when switching buildings
+            checkDigitResult = null,
+            normalizedStation = ""
+        )
     }
 }
 
@@ -268,5 +288,6 @@ data class StationLookupUiState(
     val validationStatus: String? = null,
     val inputSuggestions: List<String> = emptyList(),
     val activeAssignmentCount: Int = 0,
-    val lastLookupTime: Date? = null
+    val lastLookupTime: Date? = null,
+    val selectedBuilding: Int = 3 // Default to Building 3
 )

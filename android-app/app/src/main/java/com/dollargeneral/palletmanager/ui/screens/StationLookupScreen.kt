@@ -68,7 +68,9 @@ fun StationLookupScreen(
         StationLookupHeader(
             onNavigateToAssignments = onNavigateToAssignments,
             onNavigateToDatabase = onNavigateToDatabase,
-            assignmentCount = uiState.activeAssignmentCount
+            assignmentCount = uiState.activeAssignmentCount,
+            selectedBuilding = uiState.selectedBuilding,
+            onBuildingSelected = viewModel::updateSelectedBuilding
         )
         
         // Main station input area - takes center stage
@@ -104,7 +106,9 @@ fun StationLookupScreen(
 private fun StationLookupHeader(
     onNavigateToAssignments: () -> Unit,
     onNavigateToDatabase: () -> Unit,
-    assignmentCount: Int
+    assignmentCount: Int,
+    selectedBuilding: Int,
+    onBuildingSelected: (Int) -> Unit
 ) {
     TopAppBar(
         title = {
@@ -115,11 +119,20 @@ private fun StationLookupHeader(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Text(
-                    text = "Dollar General - Building 3",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Dollar General -",
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    com.dollargeneral.palletmanager.ui.components.CompactBuildingSelector(
+                        selectedBuilding = selectedBuilding,
+                        onBuildingSelected = onBuildingSelected
+                    )
+                }
             }
         },
         actions = {

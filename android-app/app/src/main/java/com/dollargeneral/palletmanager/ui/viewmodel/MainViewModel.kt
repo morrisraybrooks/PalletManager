@@ -123,10 +123,17 @@ class MainViewModel @Inject constructor(
     }
 
     /**
-     * Lookup check digit for a given station number.
+     * Lookup check digit for a given station number in a specific building.
      */
-    suspend fun lookupStation(stationNumber: String): String? {
-        return repository.getCheckDigitForStation(stationNumber)
+    suspend fun lookupStation(buildingNumber: Int, stationNumber: String): String? {
+        return repository.getCheckDigitForStation(buildingNumber, stationNumber)
+    }
+
+    /**
+     * Update selected building
+     */
+    fun updateSelectedBuilding(buildingNumber: Int) {
+        _uiState.value = _uiState.value.copy(selectedBuilding = buildingNumber)
     }
 }
 
@@ -136,5 +143,6 @@ class MainViewModel @Inject constructor(
 data class MainUiState(
     val isLoading: Boolean = false,
     val message: String? = null,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val selectedBuilding: Int = 3 // Default to Building 3
 )

@@ -40,11 +40,12 @@ fun MainScreen(
     onNavigateBack: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var stationInput by remember { mutableStateOf("") }
     var checkDigitResult by remember { mutableStateOf<String?>(null) }
     var isLookingUp by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    
+
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     
@@ -152,10 +153,10 @@ fun MainScreen(
                         imeAction = ImeAction.Search
                     ),
                     keyboardActions = KeyboardActions(
-                        onSearch = { 
+                        onSearch = {
                             isLookingUp = true
                             coroutineScope.launch {
-                                checkDigitResult = viewModel.lookupStation(stationInput)
+                                checkDigitResult = viewModel.lookupStation(uiState.selectedBuilding, stationInput)
                                 isLookingUp = false
                             }
                             keyboardController?.hide()
@@ -314,7 +315,7 @@ fun MainScreen(
                         onClick = {
                             isLookingUp = true
                             coroutineScope.launch {
-                                checkDigitResult = viewModel.lookupStation(stationInput)
+                                checkDigitResult = viewModel.lookupStation(uiState.selectedBuilding, stationInput)
                                 isLookingUp = false
                             }
                             keyboardController?.hide()
