@@ -55,3 +55,6 @@ package-lock.json
 # Other project directories (if not part of station numbers)
 PalletManager/
 pallet-manager/
+
+# Allow APK files in releases directory
+!releases/*.apk
