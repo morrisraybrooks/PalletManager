@@ -64,17 +64,25 @@ fun MainScreen(
             title = {
                 Column {
                     Text(
-                        text = "🎯 STATION LOOKUP",
-                        fontSize = 28.sp,
+                        text = "STATION LOOKUP",
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    Text(
-                        text = "NEW STATION-CENTRIC INTERFACE",
-                        fontSize = 16.sp,
-                        color = Color.Red,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Dollar General -",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        com.dollargeneral.palletmanager.ui.components.CompactBuildingSelector(
+                            selectedBuilding = uiState.selectedBuilding,
+                            onBuildingSelected = viewModel::updateSelectedBuilding
+                        )
+                    }
                 }
             },
             actions = {
@@ -92,7 +100,7 @@ fun MainScreen(
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Yellow.copy(alpha = 0.3f)
+                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
             )
         )
         
@@ -111,12 +119,12 @@ fun MainScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "🚀 NEW STATION-CENTRIC UI",
-                    fontSize = 24.sp,
+                    text = "STATION LOOKUP",
+                    fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Blue
+                    color = MaterialTheme.colorScheme.primary
                 )
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
                 
                 // Station input field - EXTRA LARGE for glove use
